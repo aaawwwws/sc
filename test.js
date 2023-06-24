@@ -14,6 +14,7 @@ class Scraping {
     const browser = await puppeteer.launch({
       // ブラウザの設定
       headless: false, //ウィンドウを表示させるかどうか
+      args: ["--proxy-server='direct://'", "--proxy-bypass-list=*"],
     });
     // 新しいタブを開く
     const page = await browser.newPage();
@@ -53,14 +54,16 @@ class Scraping {
   }
 }
 
+const URL_Lists = [
+  { type: "GPU", url: "https://kakaku.com/pc/videocard/itemlist.aspx" },
+  { type: "CPU", url: "https://kakaku.com/pc/cpu/itemlist.aspx" },
+];
+
 const func = () => {
-  const GPU_SC = new Scraping(
-    "https://kakaku.com/pc/videocard/itemlist.aspx",
-    "GPU"
-  );
-  const CPU_SC = new Scraping("https://kakaku.com/pc/cpu/itemlist.aspx", "CPU");
-  GPU_SC.sc();
-  CPU_SC.sc();
+  URL_Lists.forEach((item) => {
+    const SC = new Scraping(item.url, item.type);
+    SC.sc();
+  });
 };
 
 func();
